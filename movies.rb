@@ -9,9 +9,27 @@ configure do
   set :views, File.join(root, 'views')
 end
 
-
 get '/' do
   erb :form
+end
+
+get '/movies' do
+  response = Typhoeus.get("localhost:3000/movies.json?query=#{params[:query]}")
+  @movies = JSON.parse(response.body)
+  erb :index
+end
+
+get "/movies/:id" do
+  # show a particular movie
+
+  response = Typhoeus.get(
+    "localhost:3000/movies/#{params[:id]}.json"
+    )
+
+  @movie = JSON.parse(response.body)
+  #raise @movie_info.inspect
+
+  erb :show
 end
 
 get '/movies/new' do
@@ -24,21 +42,14 @@ get '/movies/create' do
   redirect '/movies'
 end
 
-get '/movies' do
-  response = Typhoeus.get("localhost:3000/movies.json?query=#{params[:query]}")
-  @movies = JSON.parse(response.body)
-  erb :index
+get '/movies/:id/edit' do
+  response = Typhoeus.get("localhost:3000/movies/#{params[:id]}.json")
+  @movie = JSON.parse(response.body)
+  erb :edit
 end
 
-get "/movie/:id" do
-  # show a particular movie
-
-  response = Typhoeus.get(
-    "localhost:3000/movies/#{params[:id]}.json"
-    )
-
-  @movie = JSON.parse(response.body)
-  #raise @movie_info.inspect
-
-  erb :show
+get '/movies/:id/update' do
+  response = Typhoeus.post("localhost:3000/movies/#{params[:id]}.json", 
+    params: {movie: params[:movie]})
+  redirect '/movies'
 end

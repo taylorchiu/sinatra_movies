@@ -2,7 +2,7 @@
 <h2>Select a Movie</h2>
 <div>
   <% @movies.each do |movie| %>
-      <div ><a class="list" href="/movie/<%= movie['id']%>" > <%= movie["title"] %> </a></div>
+      <div ><a class="list" href="/movies/<%= movie['id']%>" > <%= movie["title"] %> </a></div>
   <% end %>
 </div>
 <div>
