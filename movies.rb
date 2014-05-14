@@ -1,5 +1,6 @@
 require 'sinatra'
 require 'sinatra/reloader'
+require 'pry'
 require 'typhoeus'
 require 'json'
 
@@ -10,39 +11,34 @@ end
 
 
 get '/' do
-# redirect to form to get movie
-
-  @method = "get"
-  @action   = "/movie"
-
   erb :form
 end
 
-get '/movie' do
+get '/movies/new' do
+  erb :new
+end
 
-request = Typhoeus.get(
-  "http://www.omdbapi.com",
-  :params => { :s => params[:query] }
-  )
+get '/movies/create' do
+  response = Typhoeus.post("localhost:3000/movies.json", 
+    params: {movie: params[:movie]})
+  redirect '/movies'
+end
 
-  @movies = JSON.parse(request.body)["Search"]
-
-  puts "@@@@@@@@@@@@@@@@ movies = #{@movies}"
-
+get '/movies' do
+  response = Typhoeus.get("localhost:3000/movies.json?query=#{params[:query]}")
+  @movies = JSON.parse(response.body)
   erb :index
 end
 
 get "/movie/:id" do
   # show a particular movie
-  @id = params[:captures][0]
 
-  request = Typhoeus.get(
-    "http://www.omdbapi.com",
-    :params => { :i => @id }
+  response = Typhoeus.get(
+    "localhost:3000/movies/#{params[:id]}.json"
     )
 
-  @movie_info = JSON.parse(request.body)
+  @movie = JSON.parse(response.body)
   #raise @movie_info.inspect
 
-  erb :movie_view
+  erb :show
 end

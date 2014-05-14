@@ -1,0 +1,24 @@
+<!-- Movie View -->
+<div onload="changeBackground()" >
+  <div id="poster">
+    <% if @movie["Poster"] == "N/A" %>
+         <h1>No Image Available</h1>
+    <% else %>
+        <img  src="<%= @movie["poster"] %>"
+              alt="no picture on file"></div>
+  <% end %>
+  <div id="details">
+    <h2><%= @movie["title"] %></h2>
+    <div>
+
+    </div>
+      Year: <%= @movie["year"] %>, Rated: <%= @movie["rated"] %>,
+      Director: <%= @movie["director"] %></br>
+    </div>
+
+<!--   <button onclick="changeBackground()" >Run JS</button> -->
+   <div>
+      </br>
+      <a href="/"><button >Movie Search</button></a>
+   </div>
+</div>
